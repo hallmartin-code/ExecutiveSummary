@@ -1,0 +1,28 @@
+# Railway / Nixpacks build configuration.
+#
+# The default build is deliberately lean. PyMuPDF and ReportLab ship self-contained
+# wheels (ReportLab uses built-in Type 1 core fonts, so no system fonts are needed),
+# and PDF decks rasterise natively for the multimodal pass.
+#
+# LibreOffice is required ONLY to rasterise .pptx slides so charts drawn as images
+# can be read. PowerPoint decks are still fully parsed without it - text, tables,
+# native charts, grouped shapes, and speaker notes all extract normally. It adds
+# roughly 500 MB to the image and several minutes to the build, so it is opt-in:
+# uncomment the line below if your decks are PowerPoint with chart images that matter.
+
+[phases.setup]
+nixPkgs = [
+  "python312",
+  # "libreoffice-fresh",   # uncomment to enable .pptx slide rasterisation
+]
+
+[phases.install]
+cmds = ["python -m venv /opt/venv && . /opt/venv/bin/activate && pip install --no-cache-dir -r requirements.txt"]
+
+[start]
+cmd = "streamlit run app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true --server.fileWatcherType=none --browser.gatherUsageStats=false"
+
+[variables]
+PYTHONUNBUFFERED = "1"
+PYTHONDONTWRITEBYTECODE = "1"
+PIP_DISABLE_PIP_VERSION_CHECK = "1"

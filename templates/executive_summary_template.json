@@ -1,0 +1,339 @@
+{
+  "_comment": [
+    "CANONICAL DOCUMENT STRUCTURE TEMPLATE - Investor Executive Summary (one page).",
+    "Structure derived from the supplied Word training document. LAYOUT and CONTENT",
+    "CONTRACT only: no company data of any kind. 'guidance' states what each section",
+    "must answer; 'source_fields' names the investor-schema paths supplying evidence.",
+    "'approx_words' is a RELATIVE weight - absolute budgets are rescaled to measured",
+    "page capacity by rendering.layout.fit_word_budgets_to_page().",
+    "Layout: title bar, then a masthead (labelled sidebar + opening narrative),",
+    "then full-width body sections, then the footer."
+  ],
+
+  "page": {
+    "size": "letter",
+    "width_pt": 612.0,
+    "height_pt": 792.0,
+    "orientation": "portrait",
+    "margins": { "left": 54.0, "right": 54.0, "top": 48.0, "bottom": 44.0 }
+  },
+
+  "title_bar": {
+    "enabled": true,
+    "document_label": "Company Overview & Executive Summary",
+    "company_name_case": "upper"
+  },
+
+  "header": {
+    "eyebrow": null,
+    "company_name_case": "as-is",
+    "show_tagline": true,
+    "show_rule": false,
+    "show_meta_line": false,
+    "alignment": "left"
+  },
+
+  "masthead": {
+    "enabled": true,
+    "sidebar_width_ratio": 0.33,
+    "divider": true,
+    "show_contact": true,
+    "contact_heading": "Contact",
+    "show_not_stated": true,
+    "not_stated_label": "Not stated in source deck:",
+    "sidebar_fields": [
+      {
+        "key": "stage", "label": "Stage", "group": 0,
+        "source_field": "company.stage",
+        "guidance": "Financing stage as the deck describes it, e.g. the instrument and where it sits relative to a priced round."
+      },
+      {
+        "key": "raise", "label": "Raise", "group": 1,
+        "source_field": "fundraising.raise_amount",
+        "guidance": "Amount being raised and, if stated, its tranche structure."
+      },
+      {
+        "key": "terms", "label": "Terms", "group": 1,
+        "source_field": "fundraising.terms",
+        "guidance": "Cap, discount, interest, and any investor rights, exactly as stated."
+      },
+      {
+        "key": "industry", "label": "Industry", "group": 2,
+        "source_field": "company.industry",
+        "guidance": "Sector and sub-sector."
+      },
+      {
+        "key": "reg_path", "label": "Reg. Path", "group": 2,
+        "source_field": "technology.regulatory_pathway",
+        "guidance": "Regulatory route and classification where the product requires one. Omit entirely if not applicable."
+      },
+      {
+        "key": "market_size", "label": "Market Size", "group": 2,
+        "source_field": "market.tam",
+        "guidance": "Core market size, plus adjacent verticals if the deck sizes them."
+      },
+      {
+        "key": "use_of_funds", "label": "Use of Funds", "group": 2,
+        "source_field": "use_of_funds.summary",
+        "guidance": "One short phrase naming what the capital buys."
+      }
+    ]
+  },
+
+  "sections": [
+    {
+      "key": "corporate_summary",
+      "heading": "Corporate Summary",
+      "column": 2,
+      "order": 0,
+      "approx_words": 62,
+      "style": "paragraph",
+      "optional": false,
+      "guidance": "The opening paragraph. What the company does, the mechanism, the customer, the regulatory or commercial milestone it is driving toward, and the size of the core market. Never dropped.",
+      "source_fields": [
+        "company.description", "solution.product_service", "solution.how_it_works",
+        "solution.value_proposition", "market.tam", "customers.buyer_persona",
+        "technology.regulatory_pathway"
+      ]
+    },
+    {
+      "key": "key_facts",
+      "heading": "Key Facts",
+      "column": 2,
+      "order": 1,
+      "approx_words": 90,
+      "style": "numbered",
+      "optional": false,
+      "guidance": "Two to four numbered facts establishing that the problem is real and large. Each opens with a short bold lead-in label followed by the quantified evidence. Prefer magnitude, cost, and failure of the status quo.",
+      "source_fields": [
+        "problem.customer_problem", "problem.magnitude", "problem.cost_of_problem",
+        "problem.existing_alternatives", "problem.urgency"
+      ]
+    },
+    {
+      "key": "innovative_solution",
+      "heading": "Innovative Solution",
+      "column": 2,
+      "order": 2,
+      "approx_words": 70,
+      "style": "paragraph",
+      "optional": false,
+      "guidance": "Why the solution works and why it is possible now. Open with a bold 'Why now:' lead-in where the deck supports one, then the mechanism and the capability it delivers.",
+      "source_fields": [
+        "solution.how_it_works", "solution.value_proposition",
+        "technology.core_technology", "technology.technical_validation",
+        "problem.urgency"
+      ]
+    },
+
+    {
+      "key": "products_platform",
+      "heading": "Products & Platform",
+      "column": 0,
+      "order": 3,
+      "approx_words": 128,
+      "style": "paragraph",
+      "optional": false,
+      "guidance": "What is sold and how it earns money. Product specification and development status, then bold lead-in labels for business model, pricing and margins, and intellectual property with patent numbers and dates where stated.",
+      "source_fields": [
+        "product.specification", "product.development_status", "product.form_factor",
+        "business_model.revenue_model", "business_model.pricing",
+        "business_model.average_contract_value", "business_model.gross_margin",
+        "intellectual_property.patents", "intellectual_property.patent_status",
+        "intellectual_property.exclusivity"
+      ]
+    },
+    {
+      "key": "target_markets",
+      "heading": "Target Markets",
+      "column": 0,
+      "order": 4,
+      "approx_words": 60,
+      "style": "bullets",
+      "optional": false,
+      "guidance": "Bulleted market segments, each with a bold lead-in naming the segment followed by TAM/SAM/SOM and the methodology. Separate the core market from adjacent verticals.",
+      "source_fields": [
+        "market.tam", "market.sam", "market.som", "market.methodology",
+        "market.target_customer", "market.geography", "market.market_growth"
+      ]
+    },
+    {
+      "key": "competitive_advantages",
+      "heading": "Competitive Advantages",
+      "column": 0,
+      "order": 5,
+      "approx_words": 90,
+      "style": "bullets",
+      "optional": false,
+      "guidance": "Bulleted advantages, each concrete and comparative. Operational advantage versus the status quo, economic advantage with the cost position of named incumbents, and any regulatory or IP advantage. Claim only what the deck supports.",
+      "source_fields": [
+        "competitive_advantage.differentiation", "competitive_advantage.defensibility",
+        "competitive_advantage.competitors", "competitive_advantage.alternatives",
+        "competitive_advantage.switching_costs", "technology.regulatory_pathway",
+        "intellectual_property.exclusivity"
+      ]
+    },
+    {
+      "key": "commercial_validation",
+      "heading": "Commercial Validation",
+      "column": 0,
+      "order": 6,
+      "approx_words": 90,
+      "style": "bullets",
+      "optional": false,
+      "guidance": "Bulleted third-party evidence: completed diligence, named backers and partners, category proof points, distributor interest, letters of support, pilots and contracts. Distinguish committed revenue from expressions of interest.",
+      "source_fields": [
+        "traction.validation_evidence", "traction.partnerships", "traction.pilots",
+        "traction.contracts", "traction.regulatory_milestones", "traction.revenue",
+        "traction.arr", "customers.customer_count", "customers.named_customers",
+        "customers.pipeline"
+      ]
+    },
+    {
+      "key": "projected_financials",
+      "heading": "Projected Financials",
+      "column": 0,
+      "order": 7,
+      "approx_words": 30,
+      "style": "table",
+      "optional": true,
+      "guidance": "A compact table of the deck's own projections: years as columns, metrics as rows. Include only figures the deck states. Follow with a one-line italic caption giving units and the inflection points.",
+      "source_fields": [
+        "financial_metrics.projections", "financial_metrics.revenue_history",
+        "growth_metrics.derived"
+      ]
+    },
+    {
+      "key": "financing_opportunity",
+      "heading": "Financing Opportunity",
+      "column": 0,
+      "order": 8,
+      "approx_words": 96,
+      "style": "paragraph",
+      "optional": false,
+      "guidance": "The deal in one paragraph, opening with a bold lead-in on the amount and purpose. Instrument, tranches, cap, discount, interest, investor rights, capital already closed, and a bold 'Exit:' lead-in covering the exit route and any modelled returns and named acquirers.",
+      "source_fields": [
+        "fundraising.raise_amount", "fundraising.instrument", "fundraising.round_stage",
+        "fundraising.valuation", "fundraising.terms", "fundraising.capital_raised_to_date",
+        "fundraising.committed", "fundraising.lead_investor"
+      ]
+    },
+    {
+      "key": "use_of_funds",
+      "heading": "Use of Funds",
+      "column": 0,
+      "order": 9,
+      "approx_words": 72,
+      "style": "paragraph",
+      "optional": false,
+      "guidance": "What the capital buys, in milestone order with the deck's own dates. If the deck gives milestones rather than a line-item budget, say so in an italic bracketed note rather than inventing an allocation.",
+      "source_fields": [
+        "use_of_funds.summary", "use_of_funds.line_items", "milestones.upcoming",
+        "milestones.timeline", "financial_metrics.runway"
+      ]
+    },
+    {
+      "key": "management_team",
+      "heading": "Key Management Team",
+      "column": 0,
+      "order": 10,
+      "approx_words": 96,
+      "style": "bullets",
+      "optional": false,
+      "guidance": "One bullet per principal: bold lead-in with name, credential and role, then the relevant experience and full-time commitment where stated. Close with a single bold 'Advisors:' bullet. Never claim the deck is silent on the team when members were extracted.",
+      "source_fields": [
+        "team.founders", "team.executives", "team.advisors", "team.headcount"
+      ]
+    },
+    {
+      "key": "investment_thesis",
+      "heading": "Investment Thesis",
+      "column": 0,
+      "order": 11,
+      "approx_words": 82,
+      "style": "paragraph",
+      "optional": true,
+      "guidance": "The closing argument in one paragraph: the size and condition of the market, the defensible advantage, the validating evidence, the capital efficiency of the raise, and the exit. Synthesis only, introducing no fact not already stated above.",
+      "source_fields": [
+        "company.description", "market.tam", "competitive_advantage.differentiation",
+        "competitive_advantage.defensibility", "traction.validation_evidence",
+        "fundraising.raise_amount"
+      ]
+    }
+  ],
+
+  "typography": {
+    "body_font": "Helvetica",
+    "heading_font": "Helvetica-Bold",
+    "title_size": 15.0,
+    "title_bar_size": 14.0,
+    "title_bar_label_size": 9.0,
+    "masthead_name_size": 16.0,
+    "tagline_size": 8.0,
+    "heading_size": 10.0,
+    "body_size": 9.0,
+    "bullet_size": 8.5,
+    "sidebar_label_size": 8.0,
+    "sidebar_value_size": 8.0,
+    "caption_size": 7.5,
+    "table_size": 7.5,
+    "note_size": 7.0,
+    "metric_value_size": 13.0,
+    "metric_label_size": 6.6,
+    "footer_size": 6.8,
+    "heading_case": "as-is",
+    "heading_tracking": 0.0,
+    "line_height": 1.22
+  },
+
+  "colors": {
+    "text": "#222222",
+    "heading": "#1F4E79",
+    "accent": "#1F4E79",
+    "accent_secondary": "#2E75B6",
+    "muted": "#595959",
+    "sidebar_value": "#333333",
+    "rule": "#D6DEE6",
+    "metric_band_bg": "#F4F7FA",
+    "metric_value": "#1F4E79"
+  },
+
+  "spacing": {
+    "section_gap": 8.0,
+    "heading_gap": 2.5,
+    "paragraph_gap": 4.0,
+    "bullet_indent": 12.0,
+    "column_gap": 16.0
+  },
+
+  "table": {
+    "header_bg": "#1F4E79",
+    "header_text": "#FFFFFF",
+    "row_alt_bg": "#F4F7FA",
+    "grid": "#D6DEE6",
+    "row_labels_bold": true,
+    "max_columns": 6,
+    "max_rows": 6
+  },
+
+  "footer": {
+    "enabled": true,
+    "text": "Confidential. Prepared for accredited investors. All figures are as stated in the company pitch deck and have not been independently verified.",
+    "show_rule": true,
+    "show_generated_date": true
+  },
+
+  "columns": 1,
+  "metric_callout_count": 0,
+  "metrics_style": "sidebar",
+  "total_body_words": 900,
+  "source": "canonical",
+  "notes": [
+    "Structure derived from the supplied Word training document.",
+    "Title bar: company name plus document label, above a rule.",
+    "Masthead: labelled sidebar (stage, raise, terms, industry, regulatory path, market size, use of funds, contact, gaps) beside Corporate Summary, Key Facts and Innovative Solution.",
+    "Body: single full-width column of sections, bullets marked with an en dash in the secondary accent.",
+    "Bold lead-in labels open bullets and paragraphs, written as 'Label: detail'.",
+    "Projected Financials renders as a header-banded table with an italic caption."
+  ]
+}

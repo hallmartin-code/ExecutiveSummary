@@ -1,0 +1,39 @@
+# Streamlit server configuration.
+#
+# Port and address are passed on the command line at deploy time (Railway injects
+# $PORT), so they are deliberately not pinned here.
+
+[server]
+headless = true
+fileWatcherType = "none"
+# Streamlit prints this figure in the dropzone, so it is kept equal to the
+# app's own MAX_UPLOAD_MB default. Raising one without the other shows the user
+# a limit the app will then reject.
+maxUploadSize = 80
+maxMessageSize = 200
+# XSRF protection requires CORS to stay enabled (Streamlit sends a per-request
+# cookie and must know the allowable origins), so enableCORS is left at its
+# default of true rather than being disabled here.
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+# Never surface tracebacks to a public URL; errors are shown in the UI instead.
+showErrorDetails = false
+toolbarMode = "minimal"
+
+[theme]
+# TEN Capital Network palette. The full design is applied as a stylesheet in
+# src/ui/branding.py; these values set the base so Streamlit's own chrome
+# (spinners, tooltips, widget internals) matches rather than flashing white.
+base = "dark"
+primaryColor = "#EE5A4E"
+backgroundColor = "#0B1526"
+secondaryBackgroundColor = "#101E33"
+textColor = "#F3F6FA"
+font = "sans serif"
+
+[logger]
+level = "info"
