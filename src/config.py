@@ -13,7 +13,16 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+# A project-local .env wins over an ambient shell variable.
+#
+# python-dotenv's default is the reverse, which is a quiet foot-gun here: a
+# machine-wide ANTHROPIC_API_KEY left over from another tool silently overrides
+# the key a developer just wrote into .env, and the only symptom is that calls
+# bill to the wrong account. A .env file is an explicit, per-project statement of
+# intent, so it takes precedence. Managed deployments ship no .env, so Railway's
+# dashboard variables are unaffected.
+_DOTENV_PATH = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(_DOTENV_PATH, override=True)
 
 
 def _env_flag(name: str, default: bool = False) -> bool:

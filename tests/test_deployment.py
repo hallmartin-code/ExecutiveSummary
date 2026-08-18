@@ -198,3 +198,53 @@ class TestEnvExample:
             if line.strip().startswith("ANTHROPIC_API_KEY="):
                 value = line.split("=", 1)[1].strip()
                 assert not value.startswith("sk-ant-api"), "a real key is in .env.example"
+
+
+class TestDotenvPrecedence:
+    """A project .env must beat a stale machine-wide variable.
+
+    python-dotenv's default is the opposite, which silently bills API calls to
+    whichever key happened to be exported in the shell — a failure with no
+    symptom other than the wrong account being charged.
+    """
+
+    def test_dotenv_is_loaded_with_override(self) -> None:
+        source = (ROOT / "src" / "config.py").read_text(encoding="utf-8")
+        assert "override=True" in source, ".env would lose to an ambient variable"
+
+    def test_dotenv_path_is_pinned_to_the_project(self) -> None:
+        """Loading by search path picks up a .env from whatever cwd the app ran in."""
+        source = (ROOT / "src" / "config.py").read_text(encoding="utf-8")
+        assert "_DOTENV_PATH" in source
+        assert "load_dotenv(_DOTENV_PATH" in source
+
+    def test_env_file_wins_over_shell(self, tmp_path: Path,
+                                      monkeypatch: pytest.MonkeyPatch) -> None:
+        from dotenv import load_dotenv
+
+        env_file = tmp_path / ".env"
+        env_file.write_text("ANTHROPIC_API_KEY=sk-ant-from-dotenv\n", encoding="utf-8")
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-from-shell")
+
+        load_dotenv(env_file, override=True)
+        assert os.environ["ANTHROPIC_API_KEY"] == "sk-ant-from-dotenv"
+
+    def test_real_env_file_is_git_ignored(self) -> None:
+        """The live .env holds a real credential and must never be committed."""
+        import subprocess
+
+        env_file = ROOT / ".env"
+        if not env_file.exists():
+            pytest.skip("no local .env")
+        result = subprocess.run(
+            ["git", "check-ignore", "-q", str(env_file)], cwd=ROOT, check=False
+        )
+        assert result.returncode == 0, ".env is NOT git-ignored"
+
+    def test_no_key_is_hardcoded_in_source(self) -> None:
+        """A credential in tracked source would survive into the repo."""
+        for path in (ROOT / "src").rglob("*.py"):
+            text = path.read_text(encoding="utf-8")
+            assert "sk-ant-api03-" not in text, f"API key literal in {path.name}"
+        for name in ("app.py", "cli.py"):
+            assert "sk-ant-api03-" not in (ROOT / name).read_text(encoding="utf-8")
