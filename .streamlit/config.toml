@@ -6,6 +6,10 @@
 [server]
 headless = true
 fileWatcherType = "none"
+# Serves ./static as the app's public directory, so the icon set is also
+# reachable by URL (e.g. /app/static/favicon.ico) for anything that wants a real
+# <link rel="icon"> rather than Streamlit's page_icon.
+enableStaticServing = true
 # Streamlit prints this figure in the dropzone, so it is kept equal to the
 # app's own MAX_UPLOAD_MB default. Raising one without the other shows the user
 # a limit the app will then reject.

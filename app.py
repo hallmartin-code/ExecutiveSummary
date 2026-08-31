@@ -39,9 +39,14 @@ from src.ui import (  # noqa: E402
 )
 from src.utils.files import InputValidationError, persist_upload, temp_workspace  # noqa: E402
 
+# The favicon is the TEN Capital mark. Resolved from this file rather than the
+# working directory so it loads however the app is launched, and falls back to an
+# emoji if the asset is ever missing so the page still renders.
+_FAVICON = Path(__file__).resolve().parent / "static" / "favicon.png"
+
 st.set_page_config(
     page_title="TEN Capital — Deck to One-Pager",
-    page_icon="📄",
+    page_icon=str(_FAVICON) if _FAVICON.exists() else "📄",
     layout="centered",
     initial_sidebar_state="collapsed",
 )

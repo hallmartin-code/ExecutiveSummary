@@ -8,7 +8,30 @@ module, and nothing it renders affects what the generator produces.
 
 from __future__ import annotations
 
+import base64
+from functools import lru_cache
+from pathlib import Path
+
 import streamlit as st
+
+# The authoritative TEN Capital mark. Everything under static/ is generated from
+# it by tools/make_icons.py.
+MARK_PATH = Path(__file__).resolve().parent.parent.parent / "assets" / "ten_capital_mark.png"
+
+
+@lru_cache(maxsize=1)
+def mark_data_uri() -> str | None:
+    """The mark as a base64 data URI, or None if the asset is missing.
+
+    Inlining keeps the lockup working without static file serving and without a
+    network round-trip, which matters because it renders before anything else on
+    the page.
+    """
+    try:
+        encoded = base64.b64encode(MARK_PATH.read_bytes()).decode("ascii")
+    except OSError:
+        return None
+    return f"data:image/png;base64,{encoded}"
 
 # ---------------------------------------------------------------------------
 # Palette and type scale
@@ -365,9 +388,18 @@ def card_marker() -> None:
 
 
 def brand_lockup() -> None:
-    """The mark plus wordmark, top-left of the page."""
+    """The mark plus wordmark, top-left of the page.
+
+    Uses the supplied logo asset when present and falls back to the drawn SVG, so
+    the header still renders if assets/ is ever missing.
+    """
+    uri = mark_data_uri()
+    mark = (
+        f'<img class="tc-mark" src="{uri}" alt="TEN Capital Network">'
+        if uri else BRAND_MARK_SVG
+    )
     st.markdown(
-        f'<div class="tc-brand">{BRAND_MARK_SVG}'
+        f'<div class="tc-brand">{mark}'
         f'<div class="tc-word">Ten Capital<span>Network</span></div></div>',
         unsafe_allow_html=True,
     )
