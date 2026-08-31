@@ -74,6 +74,9 @@ Committed configuration:
 | `ALLOW_USER_API_KEY` | `true` | Optional |
 | `REQUIRE_USER_API_KEY` | `true` | Optional |
 | `MAX_UPLOAD_MB` | `80` | Optional |
+| `RESEND_API_KEY` | `re_…` | Optional — enables result emails |
+| `NOTIFY_EMAIL_TO` | `Info@tencapital.group` | Optional |
+| `NOTIFY_EMAIL_FROM` | sender on a **Resend-verified** domain | Optional |
 
 Do **not** set `PORT` — Railway injects it, and the start command reads it.
 

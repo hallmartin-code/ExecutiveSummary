@@ -17,6 +17,7 @@ Nothing crosses between the two.
 - [Installation](#installation)
 - [Environment variables](#environment-variables)
 - [Running it](#running-it)
+- [Result notifications](#result-notifications)
 - [Deploying as a web app](#deploying-as-a-web-app)
 - [Folder structure](#folder-structure)
 - [Supported file formats](#supported-file-formats)
@@ -291,6 +292,11 @@ cp .env.example .env
 | `MAX_DECK_PAGES` | No | Maximum slides accepted (default 120) |
 | `OUTPUT_DIR` | No | Where generated files are written |
 | `SHOW_TRACEBACKS` | No | Show tracebacks in the UI (off by default when deployed) |
+| `RESEND_API_KEY` | No | Enables the result email; unset means no email is sent |
+| `NOTIFY_EMAIL_TO` | No | Recipient(s), comma-separated (default `Info@tencapital.group`) |
+| `NOTIFY_EMAIL_FROM` | No | Sender; its domain must be **verified in Resend** |
+| `NOTIFY_ATTACH_ANALYSIS` | No | Attach the audit JSON as well as the PDF (default on) |
+| `EMAIL_NOTIFICATIONS` | No | Force notifications on or off |
 
 \* Without a key the application still runs end to end, using heuristic extraction and
 deterministic composition. The output is drier and thinner, but it is still one page and
@@ -352,6 +358,36 @@ Exit codes: `0` success, `1` generation or validation failure, `2` input rejecte
 
 ---
 
+
+## Result notifications
+
+When `RESEND_API_KEY` is set, every completed run is emailed with the one-pager PDF and
+the audit JSON attached. The message reports the company, slides parsed, facts extracted,
+derived metrics, validation and QA status, anything the deck did not state, and any
+sections dropped to hold one page. The subject is prefixed `[OK]` or `[REVIEW]` so a run
+needing attention is visible without opening it.
+
+```
+RESEND_API_KEY=re_...
+NOTIFY_EMAIL_TO=Info@tencapital.group
+NOTIFY_EMAIL_FROM=TEN Capital Deck Analyzer <noreply@tencapital.group>
+```
+
+Three things worth knowing:
+
+- **The sending domain must be verified in Resend.** An unverified domain fails with a
+  403, and the run still succeeds — you simply get no email. `tencapital.group` is
+  verified.
+- **This is the only path by which deck-derived content leaves the server** for anywhere
+  other than Anthropic, so the UI discloses the recipient. The disclosure is generated
+  from the live configuration, so it cannot drift out of step with the behaviour.
+- **A mail failure never costs you a document.** Sending happens last, after every
+  artefact is on disk, and all errors are caught and logged.
+
+Notifications are disabled during tests two ways over: the mailer refuses to run when
+`PYTEST_CURRENT_TEST` is set, and `conftest.py` forces `EMAIL_NOTIFICATIONS=false`.
+
+---
 ## Deploying as a web app
 
 Full instructions are in **[DEPLOYMENT.md](DEPLOYMENT.md)**. In short, for Railway:
@@ -548,7 +584,7 @@ layout revisions.
 pytest tests -q
 ```
 
-178 tests, no network access and no external fixture files — sample PDF and PPTX decks are
+278 tests, no network access and no external fixture files — sample PDF and PPTX decks are
 synthesised at test time. Coverage includes PDF and PPTX parsing, malformed and empty
 input, schema validation, metric accuracy, EXPLICIT vs. DERIVED classification,
 missing-information handling, the hallucination gate, invented-gap detection, banned-word

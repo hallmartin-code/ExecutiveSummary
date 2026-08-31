@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from src.config import (  # noqa: E402
     ALLOW_USER_API_KEY,
     APP_PASSWORD,
+    NOTIFY_EMAIL_TO,
     AVAILABLE_MODELS,
     DEFAULT_MODEL,
     IS_MANAGED_DEPLOYMENT,
@@ -25,6 +26,7 @@ from src.config import (  # noqa: E402
     REQUIRE_USER_API_KEY,
     PipelineConfig,
     _env_flag,
+    notifications_enabled,
 )
 from src.pipeline import generate_executive_summary  # noqa: E402
 from src.ui import (  # noqa: E402
@@ -196,14 +198,26 @@ with st.container(border=True):
         disabled=deck_file is None,
     )
 
-    disclosure(
-        "The deck is processed on this server and sent only to the configured AI "
-        "provider (Anthropic). Nothing is emailed or shared elsewhere, and generated "
-        "files are not retained after your download."
-        if not external_research else
-        "External research is <b>on</b>: the output may contain information that did "
-        "not come from your deck."
-    )
+    # The disclosure states exactly what leaves this server. It is generated from
+    # the live configuration so it cannot drift out of step with the behaviour.
+    _parts = [
+        "The deck is processed on this server and sent to the configured AI provider "
+        "(Anthropic) for analysis."
+    ]
+    if notifications_enabled():
+        _parts.append(
+            f"A copy of each generated one-pager and its audit JSON is emailed to "
+            f"<code>{NOTIFY_EMAIL_TO}</code> via Resend."
+        )
+    else:
+        _parts.append("Nothing is emailed or shared elsewhere.")
+    _parts.append("Generated files are not retained on the server after your download.")
+    if external_research:
+        _parts.append(
+            "External research is <b>on</b>: the output may contain information that "
+            "did not come from your deck."
+        )
+    disclosure(" ".join(_parts))
 
 progress_slot = st.empty()
 status_slot = st.empty()

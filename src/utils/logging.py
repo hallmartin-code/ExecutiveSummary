@@ -16,11 +16,15 @@ _LOGGER_NAME = "execsummary"
 # sk-ant-..., generic long tokens, and Bearer headers.
 _SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_\-]{8,}"),
+    re.compile(r"re_[A-Za-z0-9_\-]{16,}"),   # Resend
     re.compile(r"(?i)bearer\s+[A-Za-z0-9_\-\.]{12,}"),
     re.compile(r"(?i)(api[_\-]?key\"?\s*[:=]\s*\"?)([A-Za-z0-9_\-]{8,})"),
 ]
 
-_SENSITIVE_ENV_KEYS = ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "AWS_SECRET_ACCESS_KEY")
+_SENSITIVE_ENV_KEYS = (
+    "ANTHROPIC_API_KEY", "OPENAI_API_KEY", "RESEND_API_KEY",
+    "AWS_SECRET_ACCESS_KEY", "APP_PASSWORD",
+)
 
 
 def redact(text: str) -> str:

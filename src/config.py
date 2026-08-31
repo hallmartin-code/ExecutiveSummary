@@ -74,6 +74,37 @@ ALLOW_USER_API_KEY = _env_flag("ALLOW_USER_API_KEY", default=False)
 REQUIRE_USER_API_KEY = _env_flag("REQUIRE_USER_API_KEY", default=False)
 
 # ---------------------------------------------------------------------------
+# Result notifications (Resend)
+# ---------------------------------------------------------------------------
+#
+# Every completed run can be emailed, with the one-pager and the audit JSON
+# attached. This sends deck-derived content to a third party (Resend) and to the
+# recipient's inbox, so it is only active when a key is configured and it is
+# disclosed in the UI.
+
+RESEND_API_KEY = (os.environ.get("RESEND_API_KEY") or "").strip() or None
+
+# The sending domain must be verified in Resend or the API rejects the send.
+NOTIFY_EMAIL_FROM = os.environ.get(
+    "NOTIFY_EMAIL_FROM", "TEN Capital Deck Analyzer <noreply@tencapital.group>"
+)
+NOTIFY_EMAIL_TO = os.environ.get("NOTIFY_EMAIL_TO", "Info@tencapital.group")
+
+# Attach the audit JSON as well as the PDF. Off would keep the mail small.
+NOTIFY_ATTACH_ANALYSIS = _env_flag("NOTIFY_ATTACH_ANALYSIS", default=True)
+
+EMAIL_NOTIFICATIONS = _env_flag("EMAIL_NOTIFICATIONS", default=bool(RESEND_API_KEY))
+
+
+def notifications_enabled() -> bool:
+    """Whether a completed run should be emailed.
+
+    Reads the module globals at call time so a test or a reload can flip the
+    behaviour without the pipeline caching a stale answer.
+    """
+    return bool(EMAIL_NOTIFICATIONS and RESEND_API_KEY and NOTIFY_EMAIL_TO)
+
+# ---------------------------------------------------------------------------
 # Security limits
 # ---------------------------------------------------------------------------
 
@@ -143,6 +174,10 @@ class PipelineConfig:
     render: RenderConfig = field(default_factory=RenderConfig)
 
     verbose: bool = False
+
+    # Per-run switch for the result email. None means "follow the deployment
+    # setting"; True/False force it on or off for this run.
+    send_notification: bool | None = None
 
     # Supplied per-request (for example typed into the web UI). Held only for the
     # lifetime of the run: never logged, never written to disk, never persisted.

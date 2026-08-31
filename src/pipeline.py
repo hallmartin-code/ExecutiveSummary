@@ -43,6 +43,7 @@ from .analysis.summary_generator import (
 )
 from .config import PipelineConfig
 from .ingestion import load_deck
+from .notifications import send_run_notification
 from .ingestion.document import DeckDocument
 from .rendering.layout import fit_word_budgets_to_page, summarise_page
 from .rendering.pdf_generator import build_meta_line, default_footer_note, render_pdf
@@ -76,6 +77,7 @@ class PipelineResult:
     derived_metrics: list[dict[str, Any]] = field(default_factory=list)
     missing_information: list[str] = field(default_factory=list)
     ai_usage: dict[str, int] = field(default_factory=dict)
+    notification_id: str | None = None
     elapsed_seconds: float = 0.0
     warnings: list[str] = field(default_factory=list)
 
@@ -332,6 +334,13 @@ def generate_executive_summary(
 
     result.summary = summary
     result.elapsed_seconds = round(time.monotonic() - started, 2)
+
+    # Notify last, once every artefact exists on disk. Failures are logged and
+    # swallowed inside send_run_notification: a mail problem must not cost the
+    # caller a document that generated successfully.
+    report("Sending notification", 0.98)
+    result.notification_id = send_run_notification(result, config)
+
     report("Done", 1.0)
 
     if validation and validation.passed:

@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import os
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -174,3 +175,14 @@ def sample_reference(tmp_path_factory: pytest.TempPathFactory) -> Path:
     c.showPage()
     c.save()
     return path
+
+
+@pytest.fixture(autouse=True, scope="session")
+def _disable_outbound_email():
+    """Belt and braces: no test run may email a real inbox.
+
+    The mailer also refuses to run when PYTEST_CURRENT_TEST is set; this closes
+    the gap for code that calls it outside a test function.
+    """
+    os.environ["EMAIL_NOTIFICATIONS"] = "false"
+    yield
