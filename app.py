@@ -47,7 +47,7 @@ from src.utils.files import InputValidationError, persist_upload, temp_workspace
 _FAVICON = Path(__file__).resolve().parent / "static" / "favicon.png"
 
 st.set_page_config(
-    page_title="TEN Capital — Deck to One-Pager",
+    page_title="TEN Capital — Executive Summary",
     page_icon=str(_FAVICON) if _FAVICON.exists() else "📄",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -179,7 +179,7 @@ brand_lockup()
 
 with st.container(border=True):
     card_marker()
-    eyebrow("Deck Analyzer")
+    eyebrow("Executive Summary")
     card_heading(
         "Pitch Deck", "Investor One&#8209;Pager",
         "Upload a pitch deck and get a polished single-page investor PDF, "

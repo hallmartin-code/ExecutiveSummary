@@ -86,7 +86,7 @@ RESEND_API_KEY = (os.environ.get("RESEND_API_KEY") or "").strip() or None
 
 # The sending domain must be verified in Resend or the API rejects the send.
 NOTIFY_EMAIL_FROM = os.environ.get(
-    "NOTIFY_EMAIL_FROM", "TEN Capital Deck Analyzer <noreply@tencapital.group>"
+    "NOTIFY_EMAIL_FROM", "TEN Capital Executive Summary <noreply@tencapital.group>"
 )
 NOTIFY_EMAIL_TO = os.environ.get("NOTIFY_EMAIL_TO", "Info@tencapital.group")
 

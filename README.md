@@ -370,7 +370,7 @@ needing attention is visible without opening it.
 ```
 RESEND_API_KEY=re_...
 NOTIFY_EMAIL_TO=Info@tencapital.group
-NOTIFY_EMAIL_FROM=TEN Capital Deck Analyzer <noreply@tencapital.group>
+NOTIFY_EMAIL_FROM=TEN Capital Executive Summary <noreply@tencapital.group>
 ```
 
 Three things worth knowing:

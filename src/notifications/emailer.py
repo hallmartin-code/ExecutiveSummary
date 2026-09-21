@@ -210,7 +210,7 @@ def build_summary(result: Any, config: Any) -> tuple[str, str, str]:
     <div style="height:2px;border-radius:2px;margin:-28px -30px 22px;
                 background:linear-gradient(90deg,{_CORAL},#F3A22A,{_TEAL})"></div>
     <div style="font:600 11px/1.4 {_MONO};letter-spacing:.14em;text-transform:uppercase;
-                color:{_TEAL};margin-bottom:10px">Deck Analyzer &middot; {escape(status)}</div>
+                color:{_TEAL};margin-bottom:10px">Executive Summary &middot; {escape(status)}</div>
     <div style="font:700 22px/1.3 {_SANS};color:{_INK}">{escape(company)}</div>
     {tagline}
     <table style="border-collapse:collapse;width:100%">{_rows(table)}</table>
